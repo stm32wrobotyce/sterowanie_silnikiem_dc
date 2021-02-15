@@ -95,39 +95,39 @@ int main(void)
   /* USER CODE BEGIN 2 */
   drv8835_init();
 
-  int i;
+  int pwm = 0, dir = CCW, inc_dec = 1;
+  uint32_t time_tick = HAL_GetTick();
+
+  drv8835_set_motorA_direction(dir);
+  drv8835_set_motorA_speed(pwm);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  drv8835_set_motorA_direction(CCW);
-
-	  for(i=0; i<100; i++)
+	  if((HAL_GetTick() - time_tick) > 20)
 	  {
-		  drv8835_set_motorA_speed(i);
-		  HAL_Delay(20);
-	  }
+		  pwm += inc_dec;
+		  drv8835_set_motorA_speed(pwm);
 
-	  for(i=99; i>=0; i--)
-	  {
-		  drv8835_set_motorA_speed(i);
-		  HAL_Delay(20);
-	  }
+		  if(pwm >= 100)
+		  {
+			  inc_dec = -1;
+		  }
+		  else if(pwm <= 0)
+		  {
+			  inc_dec = 1;
 
-	  drv8835_set_motorA_direction(CW);
+			  if(dir == CCW)
+				  dir = CW;
+			  else if(dir == CW)
+				  dir = CCW;
 
-	  for(i=0; i<100; i++)
-	  {
-		  drv8835_set_motorA_speed(i);
-		  HAL_Delay(20);
-	  }
+			  drv8835_set_motorA_direction(dir);
+		  }
 
-	  for(i=99; i>=0; i--)
-	  {
-		  drv8835_set_motorA_speed(i);
-		  HAL_Delay(20);
+		  time_tick = HAL_GetTick();
 	  }
     /* USER CODE END WHILE */
 
