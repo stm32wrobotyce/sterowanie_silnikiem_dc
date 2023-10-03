@@ -7,7 +7,7 @@
 
 #include "main.h"
 
-TIM_HandleTypeDef htim2;
+extern TIM_HandleTypeDef htim2;
 
 void drv8835_init()
 {
